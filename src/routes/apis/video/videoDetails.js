@@ -17,7 +17,7 @@ router.put('/views/:id', async (req, res, next) => {
 // trending videos
 router.get('/trend', async (req, res, next) => {
     try {
-        const videos = await Video.find().sort({ views: -1 })
+        const videos = await Video.find().sort({ views: -1 });
         res.status(200).json(videos);
     } catch (error) {
         next(error)

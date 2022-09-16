@@ -23,17 +23,12 @@ router.use('/update/:id', auth, updateProfile);
 // user delete
 router.use('/delete', auth, deleteUser);
 
-// get user
+// get user's profile
 router.use('/find', getProfile);
 
 // subscribe a user
 router.use('/subscribe', auth, subscribeChannel);
 
 
-// // like a video
-// router.use('/like/:videoid', likevideo);
-
-// // dislike a video
-// router.use('/dislike/:videoid', dislikeVideo);
 
 module.exports = router;
