@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "../config/axios";
 
 const Container = styled.div`
   display: flex;
@@ -11,13 +12,14 @@ const Avatar = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  object-fit:cover;
 `;
 
 const Details = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  color: ${({ theme }) => theme.text}
+  color: ${({ theme }) => theme.text};
 `;
 const Name = styled.span`
   font-size: 13px;
@@ -35,19 +37,24 @@ const Text = styled.span`
   font-size: 14px;
 `;
 
-const Comment = () => {
+const Comment = ({ comment }) => {
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await axios.get(`/user/find/${comment.userId}`);
+      setUser(res.data.user);
+    }
+    fetchUsers()
+  }, [comment.userId])
   return (
     <Container>
-      <Avatar src="https://yt3.ggpht.com/yti/APfAmoE-Q0ZLJ4vk3vqmV4Kwp0sbrjxLyB8Q4ZgNsiRH=s88-c-k-c0x00ffffff-no-rj-mo" />
+      <Avatar src={user.img} />
       <Details>
         <Name>
-          John Doe <Date>1 day ago</Date>
+          {user.name} <Date>1 day ago</Date>
         </Name>
         <Text>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel, ex
-          laboriosam ipsam aliquam voluptatem perferendis provident modi, sequi
-          tempore reiciendis quod, optio ullam cumque? Quidem numquam sint
-          mollitia totam reiciendis?
+          {comment.desc}
         </Text>
       </Details>
     </Container>

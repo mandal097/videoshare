@@ -33,7 +33,8 @@ const userSlice = createSlice({
                 state.currentUser.subscribedUsers.splice(
                     state.currentUser.subscribedUsers.findIndex(
                         (channelId) => channelId === action.payload
-                    )
+                    ),
+                    1
                 );
             } else {
                 state.currentUser.subscribedUsers.push(action.payload);

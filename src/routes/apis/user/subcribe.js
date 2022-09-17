@@ -9,7 +9,7 @@ router.put('/sub/:id', async (req, res, next) => {
             $push: { subscribedUsers: req.params.id }
         });
 
-        await User.findByIdAndUpdate(id, {
+        await User.findByIdAndUpdate(req.params.id, {
             $inc: { subscribers: 1 }
         });
 
@@ -26,7 +26,7 @@ router.put('/unsub/:id', async (req, res, next) => {
             $pull: { subscribedUsers: req.params.id }
         });
 
-        await User.findByIdAndUpdate(id, {
+        await User.findByIdAndUpdate(req.params.id, {
             $inc: { subscribers: -1 }
         })
         res.status(200).json('Unsubsription successfull')

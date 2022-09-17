@@ -114,6 +114,14 @@ const Subscribe = styled.button`
   cursor: pointer;
 `;
 
+
+
+const VideoFrame = styled.video`
+  max-height:720px;
+  width:100%;
+  object-fit:cover;  
+`
+
 const Video = () => {
   const { currentVideo } = useSelector((state) => state.video);
   const { currentUser } = useSelector((state) => state.user);
@@ -184,7 +192,7 @@ const Video = () => {
     <Container>
       <Content>
         <VideoWrapper>
-          <iframe
+          {/* <iframe
             width="100%"
             height="720"
             src="https://www.youtube.com/embed/k3Vfj-e1Ma4"
@@ -192,7 +200,10 @@ const Video = () => {
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
-          ></iframe>
+          ></iframe> */}
+          <VideoFrame>
+
+          </VideoFrame>
         </VideoWrapper>
         <Title>{currentVideo.title}</Title>
         <Details>
@@ -232,23 +243,11 @@ const Video = () => {
             {currentUser.subscribedUsers?.includes(channel._id) ? "SUBSCRIBED" : "SUBSCRIBE"}</Subscribe>
         </Channel>
         <Hr />
-        <Comments />
+        <Comments videoId={currentVideo._id} />
       </Content>
-      {/* <Recommendation>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-      </Recommendation> */}
+      <Recommendation>
+        <Card type="sm" video={currentVideo}/>
+      </Recommendation>
     </Container>
   );
 };
