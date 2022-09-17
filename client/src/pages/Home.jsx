@@ -14,9 +14,13 @@ const Home = ({ type }) => {
   const [videos, setVideos] = useState([]);
   useEffect(() => {
     const fetchVideos = async () => {
-
+      const token = localStorage.getItem('token');
       const res = type === "subs"
-        ? await axios.get(`/videos/${type}`)
+        ? await axios.get(`/videos/${type}`, {
+          headers: {
+            token: `Bearer ${token}`
+          }
+        })
         : await axios.get(`/videos/vid-f/${type}`)
       setVideos(res.data)
     }

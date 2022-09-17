@@ -4,6 +4,7 @@ const auth = require("../../../middlewares/auth");
 
 const userRegister = require("./auth/signup");
 const userLogin = require("./auth/signin");
+const googleAuth = require("./auth/google");
 const updateProfile = require("./updateProfile");
 const getProfile = require("./getProfile");
 const deleteUser = require("./deleteUser");
@@ -16,6 +17,9 @@ router.use('/auth/signup', userRegister);
 
 // user signin
 router.use('/auth/signin', userLogin);
+
+// user signin via google
+router.use('/auth/google', googleAuth);
 
 // user update
 router.use('/update/:id', auth, updateProfile);

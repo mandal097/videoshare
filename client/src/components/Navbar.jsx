@@ -61,10 +61,10 @@ display:flex;
 align-items:center;
 gap:10px;
 font-weight:500;
-color:${({theme})=>theme.text};
+color:${({ theme }) => theme.text};
 `
 
-const Avatar = styled.div`
+const Avatar = styled.img`
 width:32px;
 height:32px;
 border-radius:50%;
@@ -73,7 +73,7 @@ background-color:#999;
 const Navbar = () => {
 
   const { currentUser } = useSelector((state) => state.user)
-
+  console.log(currentUser);
   return (
     <Container>
       <Wrapper>
@@ -85,8 +85,8 @@ const Navbar = () => {
           currentUser ?
             (
               <User>
-                <VideoCallOutlined/>
-                <Avatar/>
+                <VideoCallOutlined />
+                <Avatar src={currentUser.img} />
                 {currentUser.name}
               </User>
             ) : (
