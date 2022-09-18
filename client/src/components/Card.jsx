@@ -6,7 +6,7 @@ import { format } from "timeago.js";
 
 
 const Container = styled.div`
-  width: ${(props) => props.type !== "sm" && "360px"};
+  width: ${(props) => props.type !== "sm" && "310px"};
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
   display: ${(props) => props.type === "sm" && "flex"};
@@ -15,7 +15,7 @@ const Container = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: ${(props) => (props.type === "sm" ? "120px" : "202px")};
+  height: ${(props) => (props.type === "sm" ? "100px" : "190px")};
   background-color: #999;
   flex: 1;
 `;

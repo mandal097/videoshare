@@ -15,9 +15,11 @@ const Container = styled.div`
 const Main = styled.div`
   flex: 7;
   background-color: ${({ theme }) => theme.bg};
-`;
+  /* border:1px solid yellow; */
+  `;
 const Wrapper = styled.div`
-  padding: 22px 96px;
+  padding: 22px 90px;
+  /* border:1px solid yellow; */
 `;
 
 function App() {

@@ -78,7 +78,7 @@ font-size:16px;
 `;
 
 const Upload = ({ setOpen }) => {
-    const navigate =useNavigate()
+    const navigate = useNavigate()
 
     const [img, setImg] = useState(undefined);
     const [video, setVideo] = useState(undefined);
@@ -126,9 +126,9 @@ const Upload = ({ setOpen }) => {
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     setInputs((prev) => {
-                        return { ...prev, urlType: downloadURL };
+                        return { ...prev, [urlType]: downloadURL };
                     })
-                    // console.log('File available at', downloadURL);
+                    console.log('File available at', downloadURL);
                 });
             }
         );
@@ -149,8 +149,9 @@ const Upload = ({ setOpen }) => {
             }
         })
         setOpen(false);
-        res.status ===200 && navigate(`/videos/${res.data._id}`)
+        res.status === 200 && navigate(`/videos/${res.data._id}`)
     }
+
 
     return (
         <Container>

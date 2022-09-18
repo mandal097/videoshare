@@ -7,23 +7,25 @@ import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import Comments from "../components/Comments";
-import Card from "../components/Card";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../config/axios";
 import { fetchSuccess, updateDisLikes, updateLikes } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
+import Recommendations from "../components/Recommendations";
 
 
 
 const Container = styled.div`
   display: flex;
   gap: 24px;
-`;
+  /* border:1px solid red; */
+  `;
 
 const Content = styled.div`
-  flex: 5;
+  flex: 6;
+  /* border:1px solid blue; */
 `;
 const VideoWrapper = styled.div``;
 
@@ -63,9 +65,6 @@ const Hr = styled.hr`
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
 
-const Recommendation = styled.div`
-  flex: 2;
-`;
 const Channel = styled.div`
   display: flex;
   justify-content: space-between;
@@ -134,7 +133,7 @@ const Video = () => {
   const [channel, setChannel] = useState({});
   const id = path.pathname.split('/')[2];
 
-  useEffect(() => {
+  useEffect(() => {    
     const fetchVideo = async () => {
       try {
         const videoRes = await axios.get(`/videos/find/${id}`);
@@ -148,7 +147,7 @@ const Video = () => {
         console.log(error);
       }
     }
-    fetchVideo()
+    fetchVideo();
   }, [id, dispatch]);
 
   const handleLikes = async () => {
@@ -192,17 +191,8 @@ const Video = () => {
     <Container>
       <Content>
         <VideoWrapper>
-          {/* <iframe
-            width="100%"
-            height="720"
-            src="https://www.youtube.com/embed/k3Vfj-e1Ma4"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe> */}
-          <VideoFrame>
-
+          <VideoFrame controls>
+            <source src={currentVideo.videoUrl} />
           </VideoFrame>
         </VideoWrapper>
         <Title>{currentVideo.title}</Title>
@@ -232,10 +222,7 @@ const Video = () => {
               <ChannelName>{channel.name}</ChannelName>
               <ChannelCounter>{channel.subscribers} subscribers</ChannelCounter>
               <Description>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Doloribus laborum delectus unde quaerat dolore culpa sit aliquam
-                at. Vitae facere ipsum totam ratione exercitationem. Suscipit
-                animi accusantium dolores ipsam ut.
+                {currentVideo.desc}
               </Description>
             </ChannelDetail>
           </ChannelInfo>
@@ -245,9 +232,7 @@ const Video = () => {
         <Hr />
         <Comments videoId={currentVideo._id} />
       </Content>
-      <Recommendation>
-        <Card type="sm" video={currentVideo}/>
-      </Recommendation>
+      <Recommendations tags={currentVideo.tags} />
     </Container>
   );
 };

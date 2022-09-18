@@ -20,9 +20,9 @@ import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightne
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 const Container = styled.div`
-  flex: 1;
+  flex: 1.3;
   background-color: ${({ theme }) => theme.bgLighter};
-  height: 100vh;
+  height: 100%;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;

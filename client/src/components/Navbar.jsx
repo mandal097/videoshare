@@ -35,7 +35,8 @@ const Search = styled.div`
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 3px;
-`;
+  color: ${({ theme }) => theme.text};
+  `;
 
 const Input = styled.input`
   border: none;
@@ -72,11 +73,9 @@ border-radius:50%;
 background-color:#999;
 `
 const Navbar = () => {
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state) => state.user);
+  const [open, setOpen] = useState(false);
 
-  const [open, setOpen] = useState(false)
-
-  console.log(currentUser);
   return (
     <>
       <Container>
