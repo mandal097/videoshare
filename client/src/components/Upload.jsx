@@ -5,6 +5,8 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import app from '../firebase';
 import axios from '../config/axios';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
 width: 100%;
@@ -143,18 +145,24 @@ const Upload = ({ setOpen }) => {
 
     const uploadToDb = async (e) => {
         e.preventDefault();
-        const res = await axios.post('/videos', { ...inputs, tags }, {
-            headers: {
-                token: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        setOpen(false);
-        res.status === 200 && navigate(`/videos/${res.data._id}`)
+        console.log("db clicked");
+        if (!inputs || !tags || !video || !img) {
+            toast.error("Please add all the fields")
+        } else {
+            const res = await axios.post('/videos', { ...inputs, tags }, {
+                headers: {
+                    token: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            setOpen(false);
+            res.status === 200 && navigate(`/video/${res.data._id}`)
+        }
     }
 
 
     return (
         <Container>
+            <ToastContainer/>
             <Wrapper>
                 <Close onClick={() => setOpen(false)}>X</Close>
                 <Title>Upload a video</Title>

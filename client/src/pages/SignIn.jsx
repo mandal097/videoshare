@@ -6,6 +6,9 @@ import { useDispatch } from "react-redux";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth"
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   display: flex;
@@ -67,33 +70,80 @@ const Links = styled.div`
 
 const Link = styled.span`
   margin-left: 30px;
+  cursor:pointer;
+  `;
+const GoToSignIn = styled.span`
+margin-left: auto;
+font-size:12px;
+cursor:pointer;
+&:hover{
+color:blue;
+}
 `;
+
+
 
 const SignIn = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(true);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    if (!name || !email || !password) {
+      toast.error("Please fill all required fields")
+    }
+    try {
+      const res = await axios.post('/user/auth/signup', { name, email, password });
+      // console.log(res.data.user.status);
+      // console.log(res.data.user);
+      // console.log(res.status);
+      if (res.status === 201) {
+        toast.success("Registered successfully")
+        setTimeout(() => {
+          navigate('/')
+        }, 1000);
+      } else {
+        toast.error("Something went wrong")
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong")
+    }
+  };
+
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill all required fields")
+    }
     dispatch(loginStart());
     try {
       const res = await axios.post('/user/auth/signin', { email, password })
       dispatch(loginSuccess(res.data.user));
-      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('token', res.data.token);
+      setTimeout(() => {
+        navigate('/')
+      }, 1000);
     } catch (error) {
       dispatch(loginFailure());
+      toast.error("Something went wrong")
     }
   }
-  
-  
+
+
   const signinWithGoogle = async (e) => {
     e.preventDefault();
     try {
       signInWithPopup(auth, provider).then((result) => {
-        console.log(result);
+        // console.log(result);
         axios.post('/user/auth/google', {
           name: result.user.displayName,
           email: result.user.email,
@@ -102,51 +152,72 @@ const SignIn = () => {
           dispatch(loginSuccess(res.data.user))
           localStorage.setItem('token', res.data.token)
         })
+        setTimeout(() => {
+          navigate('/')
+        }, 1000);
       }).catch((err) => {
         dispatch(loginFailure())
       })
     } catch (error) {
       console.log(error);
-      console.log('error');
+      toast.error("Something went wrong")
     }
   }
 
 
   return (
     <Container>
+      <ToastContainer />
       <Wrapper>
-        <Title>Sign in</Title>
-        <SubTitle>to continue to LamaTube</SubTitle>
-        <Input
-          placeholder="email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button onClick={handleLogin}>Sign in</Button>
+        {
+          show ?
+            (
+              <>
+                <Title>Sign in</Title>
+                <SubTitle>to continue to youVid</SubTitle>
+                <Input
+                  placeholder="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <GoToSignIn onClick={() => setShow(false)}>Don't have an account</GoToSignIn>
+                <Button onClick={handleLogin}>Sign in</Button>
 
-        <Title>or</Title>
+                <Title>or</Title>
 
-        <Button onClick={signinWithGoogle} >Signin with Google</Button>
+                <Button onClick={signinWithGoogle} >Signin with Google</Button>
+              </>
+            ) : (
+              <>
+                <Title>Sign up</Title>
+                <Input
+                  placeholder="username"
+                  onChange={(e) => setName(e.target.value)}
+                  required
 
-        <Input
-          placeholder="username"
-          onChange={(e) => setName(e.target.value)}
-
-        />
-        <Input
-          placeholder="email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button>Sign up</Button>
+                />
+                <Input
+                  placeholder="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <GoToSignIn onClick={() => setShow(true)}>Already have an account</GoToSignIn>
+                <Button onClick={handleSignup}>Sign up</Button>
+              </>
+            )
+        }
       </Wrapper>
       <More>
         English(USA)

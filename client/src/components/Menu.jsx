@@ -17,8 +17,10 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
 const Container = styled.div`
   flex: 1.3;
   background-color: ${({ theme }) => theme.bgLighter};
@@ -83,7 +85,17 @@ const Title = styled.h2`
 `;
 
 const Menu = ({ darkMode, setDarkMode }) => {
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutUser = () =>{
+    localStorage.removeItem('token');
+    dispatch(logout());
+    setTimeout(() => {
+      navigate('/signin')
+    }, 1000);
+  }
   return (
     <Container>
       <Wrapper>
@@ -178,6 +190,12 @@ const Menu = ({ darkMode, setDarkMode }) => {
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
+        {
+          currentUser &&
+          <Item onClick={logoutUser}>
+            < LogoutIcon />Logout
+          </Item>
+        }
       </Wrapper>
     </Container>
   );

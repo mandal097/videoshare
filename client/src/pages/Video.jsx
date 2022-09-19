@@ -14,6 +14,8 @@ import { fetchSuccess, updateDisLikes, updateLikes } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
 import Recommendations from "../components/Recommendations";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -116,7 +118,7 @@ const Subscribe = styled.button`
 
 
 const VideoFrame = styled.video`
-  max-height:720px;
+  max-height:500px;
   width:100%;
   object-fit:cover;  
 `
@@ -133,15 +135,15 @@ const Video = () => {
   const [channel, setChannel] = useState({});
   const id = path.pathname.split('/')[2];
 
-  useEffect(() => {    
+  useEffect(() => {
     const fetchVideo = async () => {
       try {
         const videoRes = await axios.get(`/videos/find/${id}`);
-        dispatch(fetchSuccess(videoRes.data))
-        console.log(videoRes);
+        dispatch(fetchSuccess(videoRes.data));
         if (videoRes) {
           const channelRes = await axios.get(`/user/find/${videoRes.data.userId}`);
           setChannel(channelRes.data.user);
+          await axios.put(`/videos/vid-f/views/${id}`);
         }
       } catch (error) {
         console.log(error);
@@ -152,60 +154,93 @@ const Video = () => {
 
   const handleLikes = async () => {
     const token = localStorage.getItem('token')
-    await axios.put(`/videos/vid-l/likes/${currentVideo._id}`, {}, {
-      headers: {
-        token: `Bearer ${token}`
-      }
-    })
-    dispatch(updateLikes(currentUser._id))
+    if (currentUser !== null) {
+      await axios.put(`/videos/vid-l/likes/${currentVideo._id}`, {}, {
+        headers: {
+          token: `Bearer ${token}`
+        }
+      })
+      dispatch(updateLikes(currentUser._id))
+    } else {
+      toast.error("you have to log in first")
+    }
 
   };
   const handleDisLikes = async () => {
     const token = localStorage.getItem('token')
-    await axios.put(`/videos/vid-l/dislikes/${currentVideo._id}`, {}, {
-      headers: {
-        token: `Bearer ${token}`
-      }
-    })
-    dispatch(updateDisLikes(currentUser._id))
+    if (currentUser !== null) {
+      await axios.put(`/videos/vid-l/dislikes/${currentVideo._id}`, {}, {
+        headers: {
+          token: `Bearer ${token}`
+        }
+      })
+      dispatch(updateDisLikes(currentUser._id))
+    } else {
+      toast.error("you have to log in first");
+    }
   };
 
   const handleSubscribed = async () => {
     const token = localStorage.getItem('token')
-    currentUser.subscribedUsers.includes(channel._id)
-      ? await axios.put(`/user/subscribe/unsub/${channel._id}`, {}, {
-        headers: {
-          token: `Bearer ${token}`
-        }
-      }) :
-      await axios.put(`/user/subscribe/sub/${channel._id}`, {}, {
-        headers: {
-          token: `Bearer ${token}`
-        }
-      });
-    dispatch(subscription(channel._id))
+    if (currentUser !== null) {
+      if (currentUser.subscribedUsers.includes(channel._id)) {
+        await axios.put(`/user/subscribe/unsub/${channel._id}`, {}, {
+          headers: {
+            token: `Bearer ${token}`
+          }
+        })
+        dispatch(subscription(channel._id))
+      } else {
+        await axios.put(`/user/subscribe/sub/${channel._id}`, {}, {
+          headers: {
+            token: `Bearer ${token}`
+          }
+        });
+        dispatch(subscription(channel._id))
+      }
+    } else {
+      toast.error("You have to log in to subscribe")
+    }
   }
 
 
   return (
     <Container>
+      <ToastContainer />
       <Content>
         <VideoWrapper>
-          <VideoFrame controls>
-            <source src={currentVideo.videoUrl} />
-          </VideoFrame>
+          <VideoFrame controls src={currentVideo.videoUrl} autoPlay />
         </VideoWrapper>
         <Title>{currentVideo.title}</Title>
         <Details>
           <Info>{currentVideo.views} views • {format(currentVideo.createdAt)}</Info>
           <Buttons>
-            <Button onClick={handleLikes}>
-              {currentUser.likes?.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-              {currentVideo.likes.length}
-            </Button>
-            <Button onClick={handleDisLikes}>
-              {currentUser.dislikes?.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
-            </Button>
+            {
+              currentUser ?
+                (
+                  <>
+                    <Button onClick={handleLikes}>
+                      {currentUser.likes?.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                      {currentVideo.likes.length}
+                    </Button>
+                    <Button onClick={handleDisLikes}>
+                      {currentUser.dislikes?.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
+                    </Button>
+
+                  </>
+                ) : (
+                  <>
+
+                    <Button onClick={handleLikes}>
+                      {currentUser?.likes.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                      {currentVideo.likes.length}
+                    </Button>
+                    <Button onClick={handleDisLikes}>
+                      {currentUser?.dislikes.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
+                    </Button>
+                  </>
+                )
+            }
             <Button>
               <ReplyOutlinedIcon /> Share
             </Button>
@@ -227,7 +262,8 @@ const Video = () => {
             </ChannelDetail>
           </ChannelInfo>
           <Subscribe onClick={handleSubscribed}>
-            {currentUser.subscribedUsers?.includes(channel._id) ? "SUBSCRIBED" : "SUBSCRIBE"}</Subscribe>
+            {currentUser?.subscribedUsers.includes(channel._id) ? "SUBSCRIBED" : "SUBSCRIBE"}
+          </Subscribe>
         </Channel>
         <Hr />
         <Comments videoId={currentVideo._id} />

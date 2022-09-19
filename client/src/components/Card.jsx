@@ -54,10 +54,11 @@ const Info = styled.div`
   color: ${({ theme }) => theme.textSoft};
 `;
 
-const Card = ({ type, video }) => {
+const Card = ({ type, video  }) => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+
     const fetchUser = async () => {
       const res = await axios.get(`/user/find/${video.userId}`)
       setUser(res.data.user)
@@ -65,7 +66,7 @@ const Card = ({ type, video }) => {
     fetchUser()
   }, [video.userId])
   return (
-    <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
+    <Link to={`/video/${video._id}`} refresh='true'  style={{ textDecoration: "none" }}>
       <Container type={type}>
         <Image
           type={type}
