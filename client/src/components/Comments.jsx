@@ -84,6 +84,7 @@ const Comments = ({ videoId }) => {
           }
         );
         toast.success("Comment successfully")
+        setDesc('');
       } catch (error) {
         toast.error("Something went wrong or need to login")
         console.log(error);

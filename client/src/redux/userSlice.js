@@ -28,6 +28,9 @@ const userSlice = createSlice({
             state.isLoading = false;
             state.isError = false;
         },
+        updateProfile: (state, action) => {
+            state.currentUser.img = action.payload
+        },
         subscription: (state, action) => {
             if (state.currentUser.subscribedUsers.includes(action.payload)) {
                 state.currentUser.subscribedUsers.splice(
@@ -43,5 +46,5 @@ const userSlice = createSlice({
     },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, subscription } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, subscription ,updateProfile} = userSlice.actions;
 export default userSlice.reducer

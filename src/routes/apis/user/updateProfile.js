@@ -10,7 +10,7 @@ router.put('', async (req, res, next) => {
         req.body.password = hashedPassword
     }
     try {
-        const updatedUser = await User.findOneAndUpdate(req.user.id,
+        const updatedUser = await User.findByIdAndUpdate(req.user.id,
             {
                 $set: req.body
             },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Menu from "./components/Menu";
 import Navbar from "./components/Navbar";
@@ -23,18 +23,39 @@ const Wrapper = styled.div`
   padding: 22px 90px;
   /* border:1px solid yellow; */
 `;
+const Message = styled.div`
+  padding: 22px 90px;
+  color:${({ theme }) => theme.text};
+  font-size:20px;
+
+`;
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
-  const { currentuser } = useSelector((state) => state.user)
+  const { currentuser } = useSelector((state) => state.user);
+
+  const mediaMatch = window.matchMedia('(max-width: 600px)');
+  const [matches, setMatches] = useState(mediaMatch.matches);
+
+  useEffect(() => {
+    const handler = e => setMatches(e.matches);
+    mediaMatch.addListener(handler);
+    return () => mediaMatch.removeListener(handler);
+  }, [mediaMatch])
+  console.log(matches);
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+
       <Container>
         <BrowserRouter>
           <Menu darkMode={darkMode} setDarkMode={setDarkMode} />
           <Main>
             <Navbar />
+            {
+              matches &&
+              <Message>This may not give you better experience on mobile <br />Better play on desktop</Message>
+            }
             <Wrapper>
               <Routes>
                 <Route path="/">

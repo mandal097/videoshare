@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Container = styled.div`
 width: 100%;
 height:100%;
-position:absolute;
+position:fixed;
 top:0;
 left:0;
 bottom:0;
@@ -20,6 +20,7 @@ background-color:#0000007b;
 display:flex;
 align-items:center;
 justify-content:center;
+z-index:100;
 `;
 const Wrapper = styled.div`
 width: 600px;
@@ -31,7 +32,6 @@ display:flex;
 flex-direction:column;
 gap:20px;
 position:relative;
-z-index:100;
 `;
 const Close = styled.div`
 position:absolute;
@@ -145,7 +145,7 @@ const Upload = ({ setOpen }) => {
 
     const uploadToDb = async (e) => {
         e.preventDefault();
-        console.log("db clicked");
+        // console.log("db clicked");
         if (!inputs || !tags || !video || !img) {
             toast.error("Please add all the fields")
         } else {

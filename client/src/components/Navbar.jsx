@@ -6,6 +6,7 @@ import VideoCallOutlined from "@mui/icons-material/VideoCallOutlined";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Upload from '../components/Upload'
+import UpdateProfile from "./UpdateProfile";
 
 const Container = styled.div`
   position: sticky;
@@ -64,18 +65,33 @@ align-items:center;
 gap:10px;
 font-weight:500;
 color:${({ theme }) => theme.text};
+text-transform:capitalize;
+.video{
+  transition:all 300ms linear;
+  cursor:pointer;
+  &:hover{
+  transform:scale(1.1);
+}
+}
 `
 
 const Avatar = styled.img`
 width:32px;
 height:32px;
 border-radius:50%;
+margin:0 10px;
 background-color:#999;
+cursor:pointer;
+&:hover{
+transform:scale(1.1);
+}
+transition:all 300ms linear;
 `
 const Navbar = () => {
   const navigate = useNavigate()
   const { currentUser } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
+  const [profile, setProfile] = useState(false);
   const [q, setQ] = useState("");
 
   return (
@@ -91,8 +107,8 @@ const Navbar = () => {
             currentUser ?
               (
                 <User>
-                  <VideoCallOutlined onClick={() => setOpen(true)} />
-                  <Avatar src={currentUser.img} />
+                  <VideoCallOutlined onClick={() => setOpen(true)} className="video" />
+                  <Avatar src={currentUser.img} onClick={() => setProfile(true)} />
                   {currentUser.name}
                 </User>
               ) : (
@@ -107,6 +123,7 @@ const Navbar = () => {
         </Wrapper>
       </Container >
       {open && <Upload setOpen={setOpen} />}
+      {profile && <UpdateProfile setProfile={setProfile} />}
     </>
   );
 };
