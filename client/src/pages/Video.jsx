@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import Loading from '../components/Loading'
+import { useNavigate } from 'react-router-dom';
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
@@ -81,6 +83,10 @@ const Image = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  cursor:pointer;
+  &:hover{
+    transform:scale(1.06);
+  }
 `;
 
 const ChannelDetail = styled.div`
@@ -91,6 +97,11 @@ const ChannelDetail = styled.div`
 
 const ChannelName = styled.span`
   font-weight: 500;
+  cursor:pointer;
+  text-transform:capitalize;
+  &:hover{
+    color:skyblue;
+  }
 `;
 
 const ChannelCounter = styled.span`
@@ -126,12 +137,12 @@ const VideoFrame = styled.video`
 const Video = () => {
   const { currentVideo } = useSelector((state) => state.video);
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentVideo);
+  // console.log(currentVideo);
   const path = useLocation();
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-
-  // const [video, setVideo] = useState({});
+  const [loading, setLoading] = useState(true);
   const [channel, setChannel] = useState({});
   const id = path.pathname.split('/')[2];
 
@@ -150,6 +161,9 @@ const Video = () => {
       }
     }
     fetchVideo();
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000);
   }, [id, dispatch]);
 
   const handleLikes = async () => {
@@ -207,68 +221,76 @@ const Video = () => {
   return (
     <Container>
       <ToastContainer />
-      <Content>
-        <VideoWrapper>
-          <VideoFrame controls src={currentVideo.videoUrl} autoPlay />
-        </VideoWrapper>
-        <Title>{currentVideo.title}</Title>
-        <Details>
-          <Info>{currentVideo.views} views • {format(currentVideo.createdAt)}</Info>
-          <Buttons>
-            {
-              currentUser ?
-                (
-                  <>
-                    <Button onClick={handleLikes}>
-                      {currentUser.likes?.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-                      {currentVideo.likes.length}
-                    </Button>
-                    <Button onClick={handleDisLikes}>
-                      {currentUser.dislikes?.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
-                    </Button>
+      {
+        loading ?
+            <Loading/>
+          :
+          <>
 
-                  </>
-                ) : (
-                  <>
+            <Content>
+              <VideoWrapper>
+                <VideoFrame controls src={currentVideo?.videoUrl} autoPlay />
+              </VideoWrapper>
+              <Title>{currentVideo?.title}</Title>
+              <Details>
+                <Info>{currentVideo?.views} views • {format(currentVideo?.createdAt)}</Info>
+                <Buttons>
+                  {
+                    currentUser ?
+                      (
+                        <>
+                          <Button onClick={handleLikes}>
+                            {currentUser.likes?.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                            {currentVideo.likes.length}
+                          </Button>
+                          <Button onClick={handleDisLikes}>
+                            {currentUser.dislikes?.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
+                          </Button>
 
-                    <Button onClick={handleLikes}>
-                      {currentUser?.likes.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-                      {currentVideo.likes.length}
-                    </Button>
-                    <Button onClick={handleDisLikes}>
-                      {currentUser?.dislikes.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
-                    </Button>
-                  </>
-                )
-            }
-            <Button>
-              <ReplyOutlinedIcon /> Share
-            </Button>
-            <Button>
-              <AddTaskOutlinedIcon /> Save
-            </Button>
-          </Buttons>
-        </Details>
-        <Hr />
-        <Channel>
-          <ChannelInfo>
-            <Image src={channel.img} />
-            <ChannelDetail>
-              <ChannelName>{channel.name}</ChannelName>
-              <ChannelCounter>{channel.subscribers} subscribers</ChannelCounter>
-              <Description>
-                {currentVideo.desc}
-              </Description>
-            </ChannelDetail>
-          </ChannelInfo>
-          <Subscribe onClick={handleSubscribed}>
-            {currentUser?.subscribedUsers.includes(channel._id) ? "SUBSCRIBED" : "SUBSCRIBE"}
-          </Subscribe>
-        </Channel>
-        <Hr />
-        <Comments videoId={currentVideo._id} />
-      </Content>
-      <Recommendations tags={currentVideo.tags} />
+                        </>
+                      ) : (
+                        <>
+
+                          <Button onClick={handleLikes}>
+                            {currentUser?.likes.includes(currentUser._id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                            {currentVideo.likes.length}
+                          </Button>
+                          <Button onClick={handleDisLikes}>
+                            {currentUser?.dislikes.includes(currentUser._id) ? <ThumbDownIcon /> : <ThumbDownOffAltOutlinedIcon />}{currentVideo.dislikes.length}
+                          </Button>
+                        </>
+                      )
+                  }
+                  <Button>
+                    <ReplyOutlinedIcon /> Share
+                  </Button>
+                  <Button>
+                    <AddTaskOutlinedIcon /> Save
+                  </Button>
+                </Buttons>
+              </Details>
+              <Hr />
+              <Channel>
+                <ChannelInfo>
+                  <Image src={channel.img} onClick={() => navigate(`/channel/${channel._id}`)} />
+                  <ChannelDetail>
+                    <ChannelName onClick={() => navigate(`/channel/${channel._id}`)}>{channel.name}</ChannelName>
+                    <ChannelCounter>{channel.subscribers} subscribers</ChannelCounter>
+                    <Description>
+                      {currentVideo.desc}
+                    </Description>
+                  </ChannelDetail>
+                </ChannelInfo>
+                <Subscribe onClick={handleSubscribed}>
+                  {currentUser?.subscribedUsers.includes(channel._id) ? "SUBSCRIBED" : "SUBSCRIBE"}
+                </Subscribe>
+              </Channel>
+              <Hr />
+              <Comments videoId={currentVideo?._id} />
+            </Content>
+            <Recommendations tags={currentVideo?.tags} />
+          </>
+      }
     </Container>
   );
 };

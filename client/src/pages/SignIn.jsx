@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "../config/axios";
@@ -9,6 +9,7 @@ import { signInWithPopup } from "firebase/auth"
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loading from "../components/Loading";
 
 const Container = styled.div`
   display: flex;
@@ -88,6 +89,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -162,71 +164,84 @@ const SignIn = () => {
       console.log(error);
       toast.error("Something went wrong")
     }
-  }
+  };
+
+  useEffect(()=>{
+    setTimeout(() => {
+      setLoading(false)      
+    }, 1000);
+  })
 
 
   return (
     <Container>
-      <ToastContainer />
-      <Wrapper>
-        {
-          show ?
-            (
-              <>
-                <Title>Sign in</Title>
-                <SubTitle>to continue to youVid</SubTitle>
-                <Input
-                  placeholder="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <Input
-                  type="password"
-                  placeholder="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <GoToSignIn onClick={() => setShow(false)}>Don't have an account</GoToSignIn>
-                <Button onClick={handleLogin}>Sign in</Button>
+      {
+        loading ? <Loading /> : (
+          <>
 
-                <Title>or</Title>
+            <ToastContainer />
+            <Wrapper>
+              {
+                show ?
+                  (
+                    <>
+                      <Title>Sign in</Title>
+                      <SubTitle>to continue to youVid</SubTitle>
+                      <Input
+                        placeholder="email"
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                      <Input
+                        type="password"
+                        placeholder="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                      <GoToSignIn onClick={() => setShow(false)}>Don't have an account</GoToSignIn>
+                      <Button onClick={handleLogin}>Sign in</Button>
 
-                <Button onClick={signinWithGoogle} >Signin with Google</Button>
-              </>
-            ) : (
-              <>
-                <Title>Sign up</Title>
-                <Input
-                  placeholder="username"
-                  onChange={(e) => setName(e.target.value)}
-                  required
+                      <Title>or</Title>
 
-                />
-                <Input
-                  placeholder="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <Input
-                  type="password"
-                  placeholder="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <GoToSignIn onClick={() => setShow(true)}>Already have an account</GoToSignIn>
-                <Button onClick={handleSignup}>Sign up</Button>
-              </>
-            )
-        }
-      </Wrapper>
-      <More>
-        English(USA)
-        <Links>
-          <Link>Help</Link>
-          <Link>Privacy</Link>
-          <Link>Terms</Link>
-        </Links>
-      </More>
+                      <Button onClick={signinWithGoogle} >Signin with Google</Button>
+                    </>
+                  ) : (
+                    <>
+                      <Title>Sign up</Title>
+                      <Input
+                        placeholder="username"
+                        onChange={(e) => setName(e.target.value)}
+                        required
+
+                      />
+                      <Input
+                        placeholder="email"
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                      <Input
+                        type="password"
+                        placeholder="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                      <GoToSignIn onClick={() => setShow(true)}>Already have an account</GoToSignIn>
+                      <Button onClick={handleSignup}>Sign up</Button>
+                    </>
+                  )
+              }
+            </Wrapper>
+            <More>
+              English(USA)
+              <Links>
+                <Link>Help</Link>
+                <Link>Privacy</Link>
+                <Link>Terms</Link>
+              </Links>
+            </More>
+          </>
+        )
+      }
     </Container>
   );
 };

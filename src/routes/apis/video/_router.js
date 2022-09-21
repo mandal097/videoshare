@@ -10,10 +10,14 @@ const likeDislikes = require('./likeDislike');
 const videoDetails = require('./videoDetails');
 const videosByTags = require('./getVideoBytag');
 const searchVideos = require('./searchVid');
+const channelVid = require('./channelVid');
 
 
 // get video
 router.use('/find', getVideo);
+
+// get video
+router.use('/channel/all-vid', channelVid);
 
 // details of video
 router.use('/vid-f', videoDetails);

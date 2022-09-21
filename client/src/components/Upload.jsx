@@ -70,7 +70,7 @@ const Button = styled.button`
   border: none;
   padding: 10px 20px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: ${(props) => props.disabled ? "not-allowed" : "pointer"};
   background-color: ${({ theme }) => theme.soft};
   color: ${({ theme }) => theme.textSoft};
 `;
@@ -162,7 +162,7 @@ const Upload = ({ setOpen }) => {
 
     return (
         <Container>
-            <ToastContainer/>
+            <ToastContainer />
             <Wrapper>
                 <Close onClick={() => setOpen(false)}>X</Close>
                 <Title>Upload a video</Title>
@@ -204,7 +204,11 @@ const Upload = ({ setOpen }) => {
                             onChange={e => setImg(e.target.files[0])}
                         />
                     )}
-                <Button onClick={uploadToDb}>Upload</Button>
+                {/* { */}
+                {/* // (videoPerc === 100 && imgPerc === 100) && */}
+                <Button onClick={uploadToDb}
+                    disabled={(videoPerc === 100 && imgPerc === 100) ? false : true}>Upload</Button>
+                {/* } */}
             </Wrapper>
         </Container>
     )

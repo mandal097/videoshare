@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import LamaTube from "../img/logo.png";
+import YouVid from "../img/logo.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
@@ -39,10 +39,15 @@ const Logo = styled.div`
   gap: 5px;
   font-weight: bold;
   margin-bottom: 25px;
-`;
+  width:20px;
+  height:20px;
+  `;
 
 const Img = styled.img`
-  height: 25px;
+width:100%;
+height:100%;
+boject-fit:cover;
+background-position:-100%;
 `;
 
 const Item = styled.div`
@@ -101,7 +106,7 @@ const Menu = ({ darkMode, setDarkMode}) => {
       <Wrapper>
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Logo>
-            <Img src={LamaTube} />
+            <Img src={YouVid} />
             youVid
           </Logo>
         </Link>
